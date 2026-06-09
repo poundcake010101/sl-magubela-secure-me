@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SecureMe — Personal Safety Devices</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/svg+xml" href="./assets/logo.jpg">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css"/>
@@ -12,10 +13,64 @@
 
 <body>
 
+<!-- PLAN MODAL -->
+<div class="modal-overlay" id="planModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+    <div class="modal-header">
+      <img id="modalDeviceImg" src="" alt="" class="modal-device-img"/>
+      <div>
+        <p class="modal-label">You selected</p>
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <p class="modal-price" id="modalPrice"></p>
+      </div>
+    </div>
+    <p class="modal-intro">Fill in your details below and a SecureMe advisor will contact you to activate your plan — usually within 2 hours.</p>
+    <form id="planForm" novalidate>
+      <div class="form-group">
+        <label for="planName">Full Name</label>
+        <input type="text" id="planName" name="name" placeholder="e.g. Thabo Nkosi" required autocomplete="name"/>
+        <span class="field-error" id="planNameError" role="alert" aria-live="polite"></span>
+      </div>
+      <div class="form-group">
+        <label for="planPhone">Phone Number</label>
+        <input type="tel" id="planPhone" name="phone" placeholder="e.g. 071 234 5678" required autocomplete="tel"/>
+        <span class="field-error" id="planPhoneError" role="alert" aria-live="polite"></span>
+      </div>
+      <div class="form-group">
+        <label for="planEmail">Email Address</label>
+        <input type="email" id="planEmail" name="email" placeholder="e.g. thabo@email.com" autocomplete="email"/>
+        <span class="field-error" id="planEmailError" role="alert" aria-live="polite"></span>
+      </div>
+      <div class="form-group">
+        <label for="planTime">Best time to call</label>
+        <select id="planTime" name="calltime">
+          <option value="Today">Today</option>
+          <option value="Tomorrow morning">Tomorrow morning</option>
+          <option value="This week">This week</option>
+          <option value="Just browsing">Just browsing — send info via email</option>
+        </select>
+      </div>
+      <!-- Hidden field carries device name to Formspree -->
+      <input type="hidden" id="planDevice" name="device"/>
+      <button type="submit" class="btn btn-primary btn-full btn-submit" id="planSubmitBtn">
+        <span class="btn-text">Confirm Interest</span>
+        <span class="btn-loading" aria-hidden="true">Sending…</span>
+      </button>
+      <p class="form-note">🔒 No payment now. An advisor will guide you through setup.</p>
+    </form>
+    <div class="modal-success" id="modalSuccess" hidden>
+      <div class="success-icon">✓</div>
+      <h3>You're on the list!</h3>
+      <p>We'll reach out at your preferred time to get your <strong id="modalSuccessDevice"></strong> activated.</p>
+    </div>
+  </div>
+</div>
+
 <!-- NAVIGATION -->
 <nav class="nav" id="mainNav" role="navigation" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="SecureMe home">
-    <span class="logo-icon" aria-hidden="true">⬡</span>
+    <img src="assets/logo.jpg" alt="S.L Magubela Escort Security logo" class="nav-logo-img"/>
     <span>SecureMe</span>
   </a>
   <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
@@ -60,7 +115,7 @@
       <div class="device-ring ring-2"></div>
       <div class="device-ring ring-3"></div>
       <div class="device-core">
-        <div class="device-label">SOS</div>
+        <img src="assets/logo.jpg" alt="SecureMe logo" class="device-logo-img"/>
         <div class="device-pulse"></div>
       </div>
     </div>
@@ -100,7 +155,6 @@
       <h2>Built for When It Matters Most</h2>
       <p class="section-sub">Every feature engineered around one goal — getting help to you faster.</p>
     </div>
-
     <div class="grid grid-features">
       <div class="card feature-card reveal">
         <div class="feature-icon" aria-hidden="true">🆘</div>
@@ -144,7 +198,6 @@
       <h2>From Alert to Help in Minutes</h2>
       <p class="section-sub">A response chain built to eliminate delay at every step.</p>
     </div>
-
     <div class="steps">
       <div class="step reveal">
         <div class="step-number" aria-hidden="true">01</div>
@@ -194,7 +247,9 @@
 
       <div class="card product-card reveal">
         <div class="product-badge">Most Popular</div>
-        <div class="product-icon" aria-hidden="true">⌚</div>
+        <div class="product-img-wrap">
+          <img src="assets/Safety Watch Pro pic.jpg" alt="Safety Watch Pro device" class="product-img" loading="lazy"/>
+        </div>
         <h3>Safety Watch Pro</h3>
         <p class="product-desc">Full-featured smartwatch with GPS, SOS calling, fall detection, and heart-rate monitoring.</p>
         <ul class="product-features" aria-label="Included features">
@@ -204,11 +259,16 @@
           <li>7-Day Battery Life</li>
         </ul>
         <p class="price" aria-label="Starting price">From <strong>R299</strong>/month</p>
-        <button class="btn btn-primary btn-full" onclick="scrollToSection('contact')">Choose Plan</button>
+        <button class="btn btn-primary btn-full"
+          onclick="openPlanModal('Safety Watch Pro','From R299/month','assets/Safety Watch Pro pic.jpg')">
+          Choose Plan
+        </button>
       </div>
 
       <div class="card product-card reveal reveal-delay-1">
-        <div class="product-icon" aria-hidden="true">📿</div>
+        <div class="product-img-wrap">
+          <img src="assets/Guardian Pendant pic.jpg" alt="Guardian Pendant device" class="product-img" loading="lazy"/>
+        </div>
         <h3>Guardian Pendant</h3>
         <p class="product-desc">Discreet wearable for seniors and vulnerable individuals. Worn around the neck, always protected.</p>
         <ul class="product-features" aria-label="Included features">
@@ -218,11 +278,16 @@
           <li>30-Day Battery Life</li>
         </ul>
         <p class="price" aria-label="Starting price">From <strong>R199</strong>/month</p>
-        <button class="btn btn-outline btn-full" onclick="scrollToSection('contact')">Choose Plan</button>
+        <button class="btn btn-outline btn-full"
+          onclick="openPlanModal('Guardian Pendant','From R199/month','assets/Guardian Pendant pic.jpg')">
+          Choose Plan
+        </button>
       </div>
 
       <div class="card product-card reveal reveal-delay-2">
-        <div class="product-icon" aria-hidden="true">📟</div>
+        <div class="product-img-wrap">
+          <img src="assets/Safety Band Lite pic.jpg" alt="Safety Band Lite device" class="product-img" loading="lazy"/>
+        </div>
         <h3>Safety Band Lite</h3>
         <p class="product-desc">Simple, affordable GPS panic band for everyday protection. Ideal first device for children and students.</p>
         <ul class="product-features" aria-label="Included features">
@@ -232,7 +297,10 @@
           <li>14-Day Battery Life</li>
         </ul>
         <p class="price" aria-label="Starting price">From <strong>R149</strong>/month</p>
-        <button class="btn btn-outline btn-full" onclick="scrollToSection('contact')">Choose Plan</button>
+        <button class="btn btn-outline btn-full"
+          onclick="openPlanModal('Safety Band Lite','From R149/month','assets/Safety Band Lite pic.jpg')">
+          Choose Plan
+        </button>
       </div>
 
     </div>
@@ -260,10 +328,10 @@
       <p class="section-sub">Leave your details and a SecureMe advisor will reach out within 2 hours.</p>
     </div>
 
-    <form id="contactForm" class="contact-form reveal" novalidate aria-label="Contact request form">
+    <form id="contactForm" class="contact-form reveal" action="https://formspree.io/f/xykapgar" method="POST" novalidate aria-label="Contact request form">
       <div class="form-group">
         <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" name="fullName" placeholder="e.g. Thabo Nkosi" autocomplete="name" required aria-required="true"/>
+        <input type="text" id="fullName" name="name" placeholder="e.g. Thabo Nkosi" autocomplete="name" required aria-required="true"/>
         <span class="field-error" id="nameError" role="alert" aria-live="polite"></span>
       </div>
       <div class="form-group">
@@ -292,7 +360,7 @@
 
 <footer class="footer">
   <div class="footer-inner">
-    <span class="footer-logo">⬡ SecureMe</span>
+    <img src="assets/logo.jpg" alt="S.L Magubela logo" class="footer-logo-img"/>
     <p>© 2026 SecureMe by S L Magubela. All rights reserved.</p>
     <p class="footer-note">Protecting South Africa, one device at a time.</p>
   </div>

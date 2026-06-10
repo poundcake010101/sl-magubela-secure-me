@@ -70,7 +70,7 @@ secureme/
 
 ### Deploy to Netlify 
  
-public URL : 
+public URL : https://slsecureme.netlify.app/
 
 ---
 

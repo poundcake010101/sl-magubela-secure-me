@@ -67,38 +67,10 @@ secureme/
 
 ## Setup & Deployment
 
-### Local
 
-No build step required. Just open `index.html` in a browser:
-
-```bash
-# Option 1 — open directly
-open index.html
-
-# Option 2 — serve locally (recommended to avoid CORS on assets)
-npx serve .
-# or
-python3 -m http.server 8000
-```
-
-### Deploy to Netlify (recommended)
-
-1. Drag and drop the entire project folder onto [netlify.com/drop](https://app.netlify.com/drop)
-2. Your site is live instantly with a public URL
-3. Optional: connect a custom domain in Netlify settings
-
-### Deploy to GitHub Pages
-
-```bash
-git init
-git add .
-git commit -m "Initial SecureMe deployment"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/secureme.git
-git push -u origin main
-```
-
-Then go to **Settings → Pages → Source → main branch** in your GitHub repo.
+### Deploy to Netlify 
+ 
+public URL : 
 
 ---
 

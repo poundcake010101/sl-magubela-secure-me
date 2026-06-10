@@ -1,8 +1,10 @@
 /* ============================================
    SECUREME — script.js
-   Preserves: scrollToSection(), contactForm submit
-   Adds: Plan modal, Formspree integration
 ============================================ */
+
+// ─── CONFIG ──────────────────────────────────
+const WHATSAPP_NUMBER = '27660670102';
+const FORMSPREE_URL   = 'https://formspree.io/f/xykapgar';
 
 // ─── SCROLL TO SECTION ───────────────────────
 function scrollToSection(id) {
@@ -13,7 +15,7 @@ function scrollToSection(id) {
   window.scrollTo({ top, behavior: 'smooth' });
 }
 
-// ─── NAV: sticky shadow + mobile toggle ──────
+// ─── NAV ──────────────────────────────────────
 (function () {
   const nav    = document.getElementById('mainNav');
   const toggle = document.getElementById('navToggle');
@@ -42,7 +44,6 @@ function scrollToSection(id) {
 (function () {
   const items = document.querySelectorAll('.reveal');
   if (!items.length) return;
-
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -51,11 +52,10 @@ function scrollToSection(id) {
       }
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
   items.forEach(el => observer.observe(el));
 })();
 
-// ─── SMOOTH NAV LINK SCROLLING ────────────────
+// ─── SMOOTH NAV LINKS ─────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(link => {
   link.addEventListener('click', function (e) {
     const id = this.getAttribute('href').slice(1);
@@ -67,33 +67,38 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
   });
 });
 
+// ─── WHATSAPP HELPERS ─────────────────────────
+function openWhatsApp(message) {
+  const encoded = encodeURIComponent(message);
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
+}
+
+function openWhatsAppDirect() {
+  openWhatsApp('Hi SecureMe! I would like to find out more about your GPS safety devices.');
+}
+
 // ─── PLAN MODAL ───────────────────────────────
-const planModal   = document.getElementById('planModal');
-const modalClose  = document.getElementById('modalClose');
-const planForm    = document.getElementById('planForm');
+const planModal    = document.getElementById('planModal');
+const planForm     = document.getElementById('planForm');
 const modalSuccess = document.getElementById('modalSuccess');
+let   currentDevice = '';
 
 function openPlanModal(deviceName, price, imgSrc) {
-  document.getElementById('modalTitle').textContent   = deviceName;
-  document.getElementById('modalPrice').textContent   = price;
-  document.getElementById('modalDevice').value        = deviceName;
-  document.getElementById('modalDeviceImg').src       = imgSrc;
-  document.getElementById('modalDeviceImg').alt       = deviceName;
-  document.getElementById('modalSuccessDevice').textContent = deviceName;
+  currentDevice = deviceName;
+  document.getElementById('modalTitle').textContent     = deviceName;
+  document.getElementById('modalPrice').textContent     = price;
+  document.getElementById('modalDeviceImg').src         = imgSrc;
+  document.getElementById('modalDeviceImg').alt         = deviceName;
 
-  // Reset form state
-  planForm.hidden        = false;
-  modalSuccess.hidden    = true;
+  planForm.hidden      = false;
+  modalSuccess.hidden  = true;
   planForm.reset();
-  clearPlanErrors();
-  resetPlanBtn();
+  clearModalErrors();
+  resetModalBtn();
 
   planModal.hidden = false;
-  // Trigger open animation on next frame
   requestAnimationFrame(() => planModal.classList.add('open'));
-
-  // Trap focus — focus first input
-  setTimeout(() => document.getElementById('planName')?.focus(), 80);
+  setTimeout(() => document.getElementById('planFirstName')?.focus(), 80);
   document.body.style.overflow = 'hidden';
 }
 
@@ -105,116 +110,97 @@ function closePlanModal() {
   }, 250);
 }
 
-// Close via button or overlay click
-modalClose?.addEventListener('click', closePlanModal);
-planModal?.addEventListener('click', function (e) {
-  if (e.target === planModal) closePlanModal();
-});
+document.getElementById('modalClose')?.addEventListener('click', closePlanModal);
+planModal?.addEventListener('click', e => { if (e.target === planModal) closePlanModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !planModal?.hidden) closePlanModal(); });
 
-// Close on Escape key
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape' && !planModal.hidden) closePlanModal();
-});
-
-// ─── PLAN FORM SUBMIT → FORMSPREE ────────────
-planForm?.addEventListener('submit', async function (e) {
+// Plan form → build WhatsApp message and redirect
+planForm?.addEventListener('submit', function (e) {
   e.preventDefault();
-  clearPlanErrors();
+  clearModalErrors();
 
-  const name  = document.getElementById('planName');
-  const phone = document.getElementById('planPhone');
-  const email = document.getElementById('planEmail');
+  const firstName = document.getElementById('planFirstName');
+  const lastName  = document.getElementById('planLastName');
+  const phone     = document.getElementById('planPhone');
+  const email     = document.getElementById('planEmail');
+  const address   = document.getElementById('planAddress');
   let valid = true;
 
-  if (!name.value.trim() || name.value.trim().length < 2) {
-    showError('planNameError', name, 'Please enter your full name.');
+  if (!firstName.value.trim()) {
+    showFieldError('planFirstNameError', firstName, 'Please enter your first name.');
+    valid = false;
+  }
+  if (!lastName.value.trim()) {
+    showFieldError('planLastNameError', lastName, 'Please enter your surname.');
     valid = false;
   }
 
   const phoneVal = phone.value.trim().replace(/\s+/g, '');
   if (!phoneVal) {
-    showError('planPhoneError', phone, 'Please enter your phone number.');
+    showFieldError('planPhoneError', phone, 'Please enter your phone number.');
     valid = false;
   } else if (!/^(\+27|0)[6-8][0-9]{8}$/.test(phoneVal)) {
-    showError('planPhoneError', phone, 'Enter a valid South African mobile number.');
+    showFieldError('planPhoneError', phone, 'Enter a valid South African mobile number.');
     valid = false;
   }
 
   const emailVal = email.value.trim();
   if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
-    showError('planEmailError', email, 'Enter a valid email address.');
+    showFieldError('planEmailError', email, 'Enter a valid email address.');
     valid = false;
   }
 
   if (!valid) {
-    planForm.querySelector('input.error')?.focus();
+    planForm.querySelector('input.error, textarea.error')?.focus();
     return;
   }
 
-  const btn = document.getElementById('planSubmitBtn');
-  btn.classList.add('loading');
-  btn.disabled = true;
+  // Build WhatsApp pre-filled message
+  const fullName    = `${firstName.value.trim()} ${lastName.value.trim()}`;
+  const emailLine   = emailVal ? `Email: ${emailVal}` : '';
+  const addressLine = address.value.trim() ? `Address: ${address.value.trim()}` : '';
 
-  const formData = new FormData(this);
+  const message =
+  `*SecureMe Plan Request*
 
-  try {
-    const res = await fetch('https://formspree.io/f/xykapgar', {
-      method: 'POST',
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    });
+  *Device:* ${currentDevice}
+  *Name:* ${fullName}
+  *Phone:* ${phone.value.trim()}
+  ${emailLine}
+  ${addressLine}
 
-    if (res.ok) {
-      planForm.hidden    = true;
-      modalSuccess.hidden = false;
-      document.getElementById('modalSuccess').focus();
-    } else {
-      const data = await res.json();
-      const msg = data?.errors?.map(err => err.message).join(', ') || 'Something went wrong. Please try again.';
-      alert(msg);
-      resetPlanBtn();
-    }
-  } catch (err) {
-    alert('Network error. Please check your connection and try again.');
-    resetPlanBtn();
-  }
+  I would like to activate the ${currentDevice} plan. Please get in touch with me.`;
+
+  // Show success briefly then open WhatsApp
+  planForm.hidden     = false;
+  modalSuccess.hidden = false;
+  planForm.style.display = 'none';
+
+  setTimeout(() => {
+    closePlanModal();
+    openWhatsApp(message);
+  }, 1200);
 });
 
-function clearPlanErrors() {
-  ['planName','planPhone','planEmail'].forEach(id => {
-    document.getElementById(id)?.classList.remove('error');
-  });
-  ['planNameError','planPhoneError','planEmailError'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = '';
-  });
-}
-
-function resetPlanBtn() {
-  const btn = document.getElementById('planSubmitBtn');
-  if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
-}
-
-// ─── CONTACT FORM → FORMSPREE ─────────────────
+// ─── CONTACT FORM → FORMSPREE + WHATSAPP ─────
 document.getElementById('contactForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
 
   const nameInput  = document.getElementById('fullName');
   const phoneInput = document.getElementById('phone');
+  const emailInput = document.getElementById('contactEmail');
   const nameError  = document.getElementById('nameError');
   const phoneError = document.getElementById('phoneError');
+  const emailError = document.getElementById('emailError');
   const btn        = document.getElementById('submitBtn');
 
   // Reset
-  nameInput.classList.remove('error');
-  phoneInput.classList.remove('error');
-  nameError.textContent  = '';
-  phoneError.textContent = '';
+  [nameInput, phoneInput, emailInput].forEach(el => el?.classList.remove('error'));
+  [nameError, phoneError, emailError].forEach(el => { if (el) el.textContent = ''; });
 
   let valid = true;
 
-  const name = nameInput.value.trim();
-  if (!name || name.length < 2) {
+  if (!nameInput.value.trim() || nameInput.value.trim().length < 2) {
     nameInput.classList.add('error');
     nameError.textContent = 'Please enter your full name.';
     valid = false;
@@ -231,6 +217,13 @@ document.getElementById('contactForm')?.addEventListener('submit', async functio
     valid = false;
   }
 
+  const emailVal = emailInput?.value.trim();
+  if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+    emailInput.classList.add('error');
+    emailError.textContent = 'Enter a valid email address.';
+    valid = false;
+  }
+
   if (!valid) {
     this.querySelector('input.error')?.focus();
     return;
@@ -239,12 +232,10 @@ document.getElementById('contactForm')?.addEventListener('submit', async functio
   btn.classList.add('loading');
   btn.disabled = true;
 
-  const formData = new FormData(this);
-
   try {
-    const res = await fetch('https://formspree.io/f/xykapgar', {
+    const res = await fetch(FORMSPREE_URL, {
       method: 'POST',
-      body: formData,
+      body: new FormData(this),
       headers: { 'Accept': 'application/json' }
     });
 
@@ -254,21 +245,36 @@ document.getElementById('contactForm')?.addEventListener('submit', async functio
       success.hidden = false;
       success.focus();
     } else {
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       const msg = data?.errors?.map(err => err.message).join(', ') || 'Something went wrong. Please try again.';
       alert(msg);
       btn.classList.remove('loading');
       btn.disabled = false;
     }
-  } catch (err) {
+  } catch {
     alert('Network error. Please check your connection and try again.');
     btn.classList.remove('loading');
     btn.disabled = false;
   }
 });
 
-// ─── HELPER ───────────────────────────────────
-function showError(errorId, inputEl, message) {
+// ─── HELPERS ──────────────────────────────────
+function clearModalErrors() {
+  ['planFirstName','planLastName','planPhone','planEmail'].forEach(id => {
+    document.getElementById(id)?.classList.remove('error');
+  });
+  ['planFirstNameError','planLastNameError','planPhoneError','planEmailError'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '';
+  });
+}
+
+function resetModalBtn() {
+  const btn = document.getElementById('planSubmitBtn');
+  if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+}
+
+function showFieldError(errorId, inputEl, message) {
   inputEl.classList.add('error');
   const el = document.getElementById(errorId);
   if (el) el.textContent = message;

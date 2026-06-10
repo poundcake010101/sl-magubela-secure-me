@@ -10,13 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css"/>
 </head>
-
 <body>
 
-<!-- PLAN MODAL -->
+<!-- ══════════════════════════════════════
+     PLAN MODAL (WhatsApp flow)
+══════════════════════════════════════ -->
 <div class="modal-overlay" id="planModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
   <div class="modal">
     <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+
     <div class="modal-header">
       <img id="modalDeviceImg" src="" alt="" class="modal-device-img"/>
       <div>
@@ -25,49 +27,56 @@
         <p class="modal-price" id="modalPrice"></p>
       </div>
     </div>
-    <p class="modal-intro">Fill in your details below and a SecureMe advisor will contact you to activate your plan — usually within 2 hours.</p>
+
+    <p class="modal-intro">Fill in your details and click <strong>Submit via WhatsApp</strong> — it opens a pre-written message you just tap Send on.</p>
+
     <form id="planForm" novalidate>
-      <div class="form-group">
-        <label for="planName">Full Name</label>
-        <input type="text" id="planName" name="name" placeholder="e.g. Thabo Nkosi" required autocomplete="name"/>
-        <span class="field-error" id="planNameError" role="alert" aria-live="polite"></span>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="planFirstName">First Name</label>
+          <input type="text" id="planFirstName" name="firstname" placeholder="Thabo" required autocomplete="given-name"/>
+          <span class="field-error" id="planFirstNameError" role="alert" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+          <label for="planLastName">Surname</label>
+          <input type="text" id="planLastName" name="lastname" placeholder="Nkosi" required autocomplete="family-name"/>
+          <span class="field-error" id="planLastNameError" role="alert" aria-live="polite"></span>
+        </div>
       </div>
       <div class="form-group">
         <label for="planPhone">Phone Number</label>
-        <input type="tel" id="planPhone" name="phone" placeholder="e.g. 071 234 5678" required autocomplete="tel"/>
+        <input type="tel" id="planPhone" name="phone" placeholder="071 234 5678" required autocomplete="tel"/>
         <span class="field-error" id="planPhoneError" role="alert" aria-live="polite"></span>
       </div>
       <div class="form-group">
-        <label for="planEmail">Email Address</label>
-        <input type="email" id="planEmail" name="email" placeholder="e.g. thabo@email.com" autocomplete="email"/>
+        <label for="planEmail">Email Address <span class="optional">(optional)</span></label>
+        <input type="email" id="planEmail" name="email" placeholder="thabo@email.com" autocomplete="email"/>
         <span class="field-error" id="planEmailError" role="alert" aria-live="polite"></span>
       </div>
       <div class="form-group">
-        <label for="planTime">Best time to call</label>
-        <select id="planTime" name="calltime">
-          <option value="Today">Today</option>
-          <option value="Tomorrow morning">Tomorrow morning</option>
-          <option value="This week">This week</option>
-          <option value="Just browsing">Just browsing — send info via email</option>
-        </select>
+        <label for="planAddress">Delivery Address <span class="optional">(optional)</span></label>
+        <textarea id="planAddress" name="address" placeholder="e.g. 12 Main Street, Pretoria, 0001" rows="2"></textarea>
       </div>
-      <!-- Hidden field carries device name to Formspree -->
-      <input type="hidden" id="planDevice" name="device"/>
-      <button type="submit" class="btn btn-primary btn-full btn-submit" id="planSubmitBtn">
-        <span class="btn-text">Confirm Interest</span>
-        <span class="btn-loading" aria-hidden="true">Sending…</span>
+
+      <button type="submit" class="btn btn-whatsapp btn-full" id="planSubmitBtn">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span class="btn-text">Submit via WhatsApp</span>
+        <span class="btn-loading" aria-hidden="true">Opening WhatsApp…</span>
       </button>
-      <p class="form-note">🔒 No payment now. An advisor will guide you through setup.</p>
+      <p class="form-note">No payment required. An advisor will guide you through the rest.</p>
     </form>
+
     <div class="modal-success" id="modalSuccess" hidden>
       <div class="success-icon">✓</div>
-      <h3>You're on the list!</h3>
-      <p>We'll reach out at your preferred time to get your <strong id="modalSuccessDevice"></strong> activated.</p>
+      <h3>Opening WhatsApp…</h3>
+      <p>Your details are ready. Just tap <strong>Send</strong> in WhatsApp to connect with us directly.</p>
     </div>
   </div>
 </div>
 
-<!-- NAVIGATION -->
+<!-- ══════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════ -->
 <nav class="nav" id="mainNav" role="navigation" aria-label="Main navigation">
   <a href="#" class="nav-logo" aria-label="SecureMe home">
     <img src="assets/logo.jpg" alt="S.L Magubela Escort Security logo" class="nav-logo-img"/>
@@ -85,7 +94,9 @@
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
 <header class="hero" id="hero">
   <div class="hero-bg" aria-hidden="true">
     <div class="hero-grid"></div>
@@ -105,6 +116,10 @@
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button class="btn btn-ghost" onclick="scrollToSection('contact')">Request Callback</button>
+      <button class="btn btn-whatsapp" onclick="openWhatsAppDirect()">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Chat on WhatsApp
+      </button>
     </div>
     <p class="hero-sub">No long-term contracts. Cancel anytime.</p>
   </div>
@@ -125,25 +140,13 @@
 <!-- TRUST BAR -->
 <section class="trust" aria-label="Key features summary">
   <div class="trust-inner">
-    <div class="trust-item">
-      <span class="trust-icon" aria-hidden="true">◉</span>
-      <span>24/7 Monitoring</span>
-    </div>
+    <div class="trust-item"><span class="trust-icon" aria-hidden="true">◉</span><span>24/7 Monitoring</span></div>
     <div class="trust-divider" aria-hidden="true"></div>
-    <div class="trust-item">
-      <span class="trust-icon" aria-hidden="true">◎</span>
-      <span>Real-Time GPS</span>
-    </div>
+    <div class="trust-item"><span class="trust-icon" aria-hidden="true">◎</span><span>Real-Time GPS</span></div>
     <div class="trust-divider" aria-hidden="true"></div>
-    <div class="trust-item">
-      <span class="trust-icon" aria-hidden="true">◈</span>
-      <span>Nationwide Coverage</span>
-    </div>
+    <div class="trust-item"><span class="trust-icon" aria-hidden="true">◈</span><span>Nationwide Coverage</span></div>
     <div class="trust-divider" aria-hidden="true"></div>
-    <div class="trust-item">
-      <span class="trust-icon" aria-hidden="true">◆</span>
-      <span>Emergency Response</span>
-    </div>
+    <div class="trust-item"><span class="trust-icon" aria-hidden="true">◆</span><span>Emergency Response</span></div>
   </div>
 </section>
 
@@ -156,36 +159,12 @@
       <p class="section-sub">Every feature engineered around one goal — getting help to you faster.</p>
     </div>
     <div class="grid grid-features">
-      <div class="card feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">🆘</div>
-        <h3>SOS Panic Button</h3>
-        <p>One press sends your exact location and triggers an immediate emergency alert to your contacts and our response team.</p>
-      </div>
-      <div class="card feature-card reveal reveal-delay-1">
-        <div class="feature-icon" aria-hidden="true">📍</div>
-        <h3>Live GPS Tracking</h3>
-        <p>Real-time location updates every 30 seconds. Trusted contacts can check in on you anytime through the SecureMe app.</p>
-      </div>
-      <div class="card feature-card reveal reveal-delay-2">
-        <div class="feature-icon" aria-hidden="true">📞</div>
-        <h3>Two-Way Calling</h3>
-        <p>Speak directly to our 24/7 response operators or your nominated contacts — even without your phone nearby.</p>
-      </div>
-      <div class="card feature-card reveal">
-        <div class="feature-icon" aria-hidden="true">⚡</div>
-        <h3>Fall Detection</h3>
-        <p>Advanced motion sensors detect sudden falls and automatically trigger an alert if you're unresponsive within 30 seconds.</p>
-      </div>
-      <div class="card feature-card reveal reveal-delay-1">
-        <div class="feature-icon" aria-hidden="true">🔔</div>
-        <h3>Geofencing Alerts</h3>
-        <p>Set safe zones for elderly family members or children. Get notified instantly when boundaries are crossed.</p>
-      </div>
-      <div class="card feature-card reveal reveal-delay-2">
-        <div class="feature-icon" aria-hidden="true">💧</div>
-        <h3>Water Resistant</h3>
-        <p>IP67-rated protection. Worn in the shower, pool, or rain — because emergencies don't wait for good weather.</p>
-      </div>
+      <div class="card feature-card reveal"><div class="feature-icon" aria-hidden="true">🆘</div><h3>SOS Panic Button</h3><p>One press sends your exact location and triggers an immediate emergency alert to your contacts and our response team.</p></div>
+      <div class="card feature-card reveal reveal-delay-1"><div class="feature-icon" aria-hidden="true">📍</div><h3>Live GPS Tracking</h3><p>Real-time location updates every 30 seconds. Trusted contacts can check in on you anytime through the SecureMe app.</p></div>
+      <div class="card feature-card reveal reveal-delay-2"><div class="feature-icon" aria-hidden="true">📞</div><h3>Two-Way Calling</h3><p>Speak directly to our 24/7 response operators or your nominated contacts — even without your phone nearby.</p></div>
+      <div class="card feature-card reveal"><div class="feature-icon" aria-hidden="true">⚡</div><h3>Fall Detection</h3><p>Advanced motion sensors detect sudden falls and automatically trigger an alert if you're unresponsive within 30 seconds.</p></div>
+      <div class="card feature-card reveal reveal-delay-1"><div class="feature-icon" aria-hidden="true">🔔</div><h3>Geofencing Alerts</h3><p>Set safe zones for elderly family members or children. Get notified instantly when boundaries are crossed.</p></div>
+      <div class="card feature-card reveal reveal-delay-2"><div class="feature-icon" aria-hidden="true">💧</div><h3>Water Resistant</h3><p>IP67-rated protection. Worn in the shower, pool, or rain — because emergencies don't wait for good weather.</p></div>
     </div>
   </div>
 </section>
@@ -199,37 +178,13 @@
       <p class="section-sub">A response chain built to eliminate delay at every step.</p>
     </div>
     <div class="steps">
-      <div class="step reveal">
-        <div class="step-number" aria-hidden="true">01</div>
-        <div class="step-content">
-          <h3>Wear Your Device</h3>
-          <p>Put on your SecureMe wearable. Lightweight, discreet, and always ready.</p>
-        </div>
-      </div>
+      <div class="step reveal"><div class="step-number" aria-hidden="true">01</div><div class="step-content"><h3>Wear Your Device</h3><p>Put on your SecureMe wearable. Lightweight, discreet, and always ready.</p></div></div>
       <div class="step-connector" aria-hidden="true"></div>
-      <div class="step reveal reveal-delay-1">
-        <div class="step-number" aria-hidden="true">02</div>
-        <div class="step-content">
-          <h3>Press SOS</h3>
-          <p>Hold the button for 3 seconds. Your location is pinged and alert triggers instantly.</p>
-        </div>
-      </div>
+      <div class="step reveal reveal-delay-1"><div class="step-number" aria-hidden="true">02</div><div class="step-content"><h3>Press SOS</h3><p>Hold the button for 3 seconds. Your location is pinged and alert triggers instantly.</p></div></div>
       <div class="step-connector" aria-hidden="true"></div>
-      <div class="step reveal reveal-delay-2">
-        <div class="step-number" aria-hidden="true">03</div>
-        <div class="step-content">
-          <h3>Alert Received</h3>
-          <p>Our 24/7 monitoring team is notified alongside your emergency contacts.</p>
-        </div>
-      </div>
+      <div class="step reveal reveal-delay-2"><div class="step-number" aria-hidden="true">03</div><div class="step-content"><h3>Alert Received</h3><p>Our 24/7 monitoring team is notified alongside your emergency contacts.</p></div></div>
       <div class="step-connector" aria-hidden="true"></div>
-      <div class="step reveal reveal-delay-3">
-        <div class="step-number" aria-hidden="true">04</div>
-        <div class="step-content">
-          <h3>Help Dispatched</h3>
-          <p>Response is coordinated to your exact GPS location. You are never alone.</p>
-        </div>
-      </div>
+      <div class="step reveal reveal-delay-3"><div class="step-number" aria-hidden="true">04</div><div class="step-content"><h3>Help Dispatched</h3><p>Response is coordinated to your exact GPS location. You are never alone.</p></div></div>
     </div>
   </div>
 </section>
@@ -242,7 +197,6 @@
       <h2>Protection for Every Lifestyle</h2>
       <p class="section-sub">All plans include 24/7 monitoring, GPS tracking, and emergency response coordination.</p>
     </div>
-
     <div class="grid grid-devices">
 
       <div class="card product-card reveal">
@@ -259,10 +213,7 @@
           <li>7-Day Battery Life</li>
         </ul>
         <p class="price" aria-label="Starting price">From <strong>R299</strong>/month</p>
-        <button class="btn btn-primary btn-full"
-          onclick="openPlanModal('Safety Watch Pro','From R299/month','assets/Safety Watch Pro pic.jpg')">
-          Choose Plan
-        </button>
+        <button class="btn btn-primary btn-full" onclick="openPlanModal('Safety Watch Pro','From R299/month','assets/Safety Watch Pro pic.jpg')">Choose Plan</button>
       </div>
 
       <div class="card product-card reveal reveal-delay-1">
@@ -278,10 +229,7 @@
           <li>30-Day Battery Life</li>
         </ul>
         <p class="price" aria-label="Starting price">From <strong>R199</strong>/month</p>
-        <button class="btn btn-outline btn-full"
-          onclick="openPlanModal('Guardian Pendant','From R199/month','assets/Guardian Pendant pic.jpg')">
-          Choose Plan
-        </button>
+        <button class="btn btn-outline btn-full" onclick="openPlanModal('Guardian Pendant','From R199/month','assets/Guardian Pendant pic.jpg')">Choose Plan</button>
       </div>
 
       <div class="card product-card reveal reveal-delay-2">
@@ -297,10 +245,7 @@
           <li>14-Day Battery Life</li>
         </ul>
         <p class="price" aria-label="Starting price">From <strong>R149</strong>/month</p>
-        <button class="btn btn-outline btn-full"
-          onclick="openPlanModal('Safety Band Lite','From R149/month','assets/Safety Band Lite pic.jpg')">
-          Choose Plan
-        </button>
+        <button class="btn btn-outline btn-full" onclick="openPlanModal('Safety Band Lite','From R149/month','assets/Safety Band Lite pic.jpg')">Choose Plan</button>
       </div>
 
     </div>
@@ -312,10 +257,16 @@
   <div class="cta-inner">
     <h2>The Safest Decision You Can Make Today</h2>
     <p>Join thousands of South Africans with real-time protection — wherever life takes them.</p>
-    <button class="btn btn-dark" onclick="scrollToSection('contact')">
-      Get Started Now
-      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
+    <div class="cta-buttons">
+      <button class="btn btn-dark" onclick="scrollToSection('contact')">
+        Get Started Now
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn btn-whatsapp" onclick="openWhatsAppDirect()">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Chat on WhatsApp
+      </button>
+    </div>
   </div>
 </section>
 
@@ -328,7 +279,7 @@
       <p class="section-sub">Leave your details and a SecureMe advisor will reach out within 2 hours.</p>
     </div>
 
-    <form id="contactForm" class="contact-form reveal" action="https://formspree.io/f/xykapgar" method="POST" novalidate aria-label="Contact request form">
+    <form id="contactForm" class="contact-form reveal" novalidate aria-label="Contact request form">
       <div class="form-group">
         <label for="fullName">Full Name</label>
         <input type="text" id="fullName" name="name" placeholder="e.g. Thabo Nkosi" autocomplete="name" required aria-required="true"/>
@@ -340,13 +291,26 @@
         <span class="field-error" id="phoneError" role="alert" aria-live="polite"></span>
       </div>
       <div class="form-group">
+        <label for="contactEmail">Email Address <span class="optional">(optional)</span></label>
+        <input type="email" id="contactEmail" name="email" placeholder="e.g. thabo@email.com" autocomplete="email"/>
+        <span class="field-error" id="emailError" role="alert" aria-live="polite"></span>
+      </div>
+      <div class="form-group">
         <label for="message">Message <span class="optional">(optional)</span></label>
         <textarea id="message" name="message" placeholder="Tell us which device you're interested in, or ask a question..." rows="4"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
-        <span class="btn-text">Send Request</span>
-        <span class="btn-loading" aria-hidden="true">Sending…</span>
-      </button>
+
+      <div class="contact-actions">
+        <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+          <span class="btn-text">Send Request</span>
+          <span class="btn-loading" aria-hidden="true">Sending…</span>
+        </button>
+        <span class="contact-or">or</span>
+        <button type="button" class="btn btn-whatsapp" onclick="openWhatsAppDirect()">
+          <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chat on WhatsApp
+        </button>
+      </div>
       <p class="form-note">🔒 Your details are never shared with third parties.</p>
     </form>
 
@@ -358,13 +322,19 @@
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
-    <img src="assets/logo.jpg" alt="S.L Magubela logo" class="footer-logo-img"/>
+    <img src="assets/logo.jpg" alt="S.L Magubela Escort Security logo" class="footer-logo-img"/>
     <p>© 2026 SecureMe by S L Magubela. All rights reserved.</p>
     <p class="footer-note">Protecting South Africa, one device at a time.</p>
   </div>
 </footer>
+
+<!-- FLOATING WHATSAPP BUTTON -->
+<a href="#" onclick="openWhatsAppDirect(); return false;" class="wa-float" aria-label="Chat with us on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
 
 <script src="script.js"></script>
 </body>
